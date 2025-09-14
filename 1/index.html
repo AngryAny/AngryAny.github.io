@@ -20,9 +20,68 @@ One way to do this is the apply the L2 norm on a smaller patch of the image such
 
 Applying this technique to our image, we get the following output:
 
-<img src="media/cathedral_1_l2.jpg" alt="Cathedral" width="500">
+<img src="media/cathedral_1_L2.jpg" alt="Cathedral" width="500">
 
 Another way to do this is to use the Normalized Cross Correlation (NCC) loss. The output looks as follows:
 
 <img src="media/cathedral_1_ncc.jpg" alt="Cathedral" width="500">
 
+
+The problem here is that although this works on a smaller image like this ~(300 x 300 pixels), trying to brute force search this on every pixel will take too much time. Thus, we want to implement a pyramid based search to find the best alignment.
+
+A pyramid based search starts with a much lower resolution version of the image (downsampled) and finds the best offset for this smaller version. 
+Then, we look at a larger version of it, finds an offset (based on the offset of the smaller version) and repeats this process until we reach the original resolution.
+
+In this particular case, the pyramid search results in the same output without any significant speed up. However, consider a different image such as this image of 3 generations:
+
+<img src="media/3_generations.tif" alt="3 Generations" width="500">
+
+This image is 9629 x 3714 pixels. If we were to use the brute force approach, we would have to search tens of millions of possible aligments, taking minutes if not hours. On the other hand, the pyramid search only takes a few seconds under the right conditions.
+
+Here is the output of the pyramid search, as well as the output of pyramid search for various images:
+
+<img src="media/3_generations_pyramid.jpg" alt="3 Generations Pyramid" width="500">
+
+<p>Here are the results of the pyramid search algorithm applied to various other images:</p>
+
+<img src="media/monastery_aligned_pyramid.jpg" alt="Monastery" width="500">
+<p><em>Monastery</em></p>
+
+<img src="media/tobolsk_aligned_pyramid.jpg" alt="Tobolsk" width="500">
+<p><em>Tobolsk</em></p>
+
+<img src="media/cathedral_aligned_pyramid.jpg" alt="Cathedral" width="500">
+<p><em>Cathedral</em></p>
+
+<img src="media/emir_aligned_pyramid.jpg" alt="Emir" width="500">
+<p><em>Emir</em></p>
+
+<img src="media/italil_aligned_pyramid.jpg" alt="Italil" width="500">
+<p><em>Italil</em></p>
+
+<img src="media/church_aligned_pyramid.jpg" alt="Church" width="500">
+<p><em>Church</em></p>
+
+<img src="media/three_generations_aligned_pyramid.jpg" alt="Three Generations" width="500">
+<p><em>Three Generations</em></p>
+
+<img src="media/lugano_aligned_pyramid.jpg" alt="Lugano" width="500">
+<p><em>Lugano</em></p>
+
+<img src="media/melons_aligned_pyramid.jpg" alt="Melons" width="500">
+<p><em>Melons</em></p>
+
+<img src="media/lastochikino_aligned_pyramid.jpg" alt="Lastochikino" width="500">
+<p><em>Lastochikino</em></p>
+
+<img src="media/icon_aligned_pyramid.jpg" alt="Icon" width="500">
+<p><em>Icon</em></p>
+
+<img src="media/siren_aligned_pyramid.jpg" alt="Siren" width="500">
+<p><em>Siren</em></p>
+
+<img src="media/self_portrait_aligned_pyramid.jpg" alt="Self Portrait" width="500">
+<p><em>Self Portrait</em></p>
+
+<img src="media/harvesters_aligned_pyramid.jpg" alt="Harvesters" width="500">
+<p><em>Harvesters</em></p>
