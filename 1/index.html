@@ -1,6 +1,28 @@
-Hello, this blog is aims to talk about how to use OpenCV to colorize a grayscale image.
+Hello, this blog is aims to talk about how to use OpenCV to colorize a grayscale image. Before the advent of color cameras, a lot of cameras took images of each of the r,g,b channels separately in order to get the actual color back based on this.
 
 I will use the following image as an example:
 
 <img src="media/cathedral.jpg" alt="Cathedral" width="500">
+
+This image is a grayscale image (only one channel instead of rgb), with each of the 3 images 
+representing the blue, green, and red channels in a gray scale. Our job is to get all of these there grayscales and put them together to have a color image.
+
+A naive attempt at this will look something like this:
+
+<img src="media/cathedral_0.jpg" alt="Cathedral" width="500">
+
+What we do here is to that we just naively chunk the original image into 1/3 of the height and assign the colors respectively. We see that the images do not seem to align properly.
+Thus, we need to align the three images together to get the correct color image. An easy way to start off would be to find the alignment that reduces the L2 loss since we know that 
+these colors will generally have pretty high correlation.
+
+Of course, a natural problem that arises here is that after adding some sort of offset, the image dimensions will no longer match up. Thus, we need to find a way to account for this in our norm.
+One way to do this is the apply the L2 norm on a smaller patch of the image such that after both the original and shifted dimensions include the entirety of this smaller patch. I arbitrarily chose the middle 40% of each dimension (meaning we only use 16% total).
+
+Applying this technique to our image, we get the following output:
+
+<img src="media/cathedral_1_l2.jpg" alt="Cathedral" width="500">
+
+Another way to do this is to use the Normalized Cross Correlation (NCC) loss. The output looks as follows:
+
+<img src="media/cathedral_1_ncc.jpg" alt="Cathedral" width="500">
 
