@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photography Project - Perspective and Depth</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .image-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .gallery-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .comparison-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .comparison-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        
+        .comparison-label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Photography Project - Perspective and Depth</h1>
+    
+    <div class="intro">
+        <p>This project explores the fascinating relationship between camera distance, focal length, and perspective in photography. Through practical examples, we demonstrate how the same subject can appear dramatically different based on shooting techniques.</p>
+    </div>
+
+    <h2>1. Selfie: The Wrong Way vs. The Right Way</h2>
+    
+    <p>The first comparison demonstrates the dramatic difference between close-up and distant photography when capturing portraits.</p>
+    
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="media/IMG_9792.jpg" alt="Close-up selfie">
+            <div class="comparison-label">Close-up (Wrong Way)</div>
+            <div class="image-caption">IMG_9792 - Close distance with wide angle</div>
+        </div>
+        
+        <div class="comparison-item">
+            <img src="media/IMG_9793.jpg" alt="Distant selfie">
+            <div class="comparison-label">Distant (Right Way)</div>
+            <div class="image-caption">IMG_9793 - Farther distance with zoom</div>
+        </div>
+    </div>
+    
+    <div class="intro">
+        <p>The key difference lies in perspective distortion. When photographed from close up with a wide angle, facial features appear compressed and distorted due to the rapid change in depth. A photo taken from further away with zoom maintains more natural proportions because the relative depth differences are less pronounced.</p>
+    </div>
+
+    <h2>2. Architectural Perspective Compression</h2>
+    
+    <p>This second example shows how distance and focal length affect the perception of architectural spaces and objects.</p>
+    
+    <div class="comparison-grid">
+        <div class="comparison-item">
+            <img src="media/IMG_9809.jpg" alt="Close architectural view">
+            <div class="comparison-label">Close Distance</div>
+            <div class="image-caption">IMG_9809 - Wide angle, close perspective</div>
+        </div>
+        
+        <div class="comparison-item">
+            <img src="media/IMG_9810.jpg" alt="Distant architectural view">
+            <div class="comparison-label">Distant with Zoom</div>
+            <div class="image-caption">IMG_9810 - Telephoto, compressed perspective</div>
+        </div>
+    </div>
+    
+    <div class="intro">
+        <p>The architectural comparison reveals how zooming in from a greater distance compresses the scene. Elements like the whiteboard on the right appear more compressed in the zoomed shot, demonstrating that <strong>zooming in from far away is not equivalent to simply moving closer</strong> to the subject.</p>
+    </div>
+
+    <h2>3. The Dolly Zoom Effect</h2>
+    
+    <p>The dolly zoom (also known as the "Vertigo effect") is a cinematographic technique that combines camera movement with zoom to create a dramatic perspective shift.</p>
+    
+    <div class="image-container">
+        <img src="media/animation.gif" alt="Dolly zoom animation">
+        <div class="image-caption">Dolly Zoom Animation - Camera moves backward while zooming in</div>
+    </div>
+    
+    <div class="intro">
+        <p><strong>Technical Explanation:</strong> In a dolly zoom, the camera physically moves away from the subject while simultaneously zooming in (or vice versa). This technique keeps the main subject the same size in frame while dramatically altering the background perspective, creating an unsettling visual effect that suggests psychological tension or revelation.</p>
+        
+        <p>This effect demonstrates the fundamental principle that <em>camera distance and focal length are independent variables</em> that can be manipulated to create vastly different visual experiences, even when the subject appears to remain the same size.</p>
+    </div>
+
+</body>
+</html>
