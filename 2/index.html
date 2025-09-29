@@ -32,6 +32,13 @@
             margin-top: 30px;
             margin-bottom: 15px;
         }
+
+        h4 {
+            color: #7d8a97;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
         
         p {
             margin-bottom: 15px;
@@ -319,17 +326,42 @@ assert np.allclose(camera_man_gaussian_partial_y_once, camera_man_gaussian_parti
 
     <p>You can see that the FFT of the hybrid is equal to the sum/average of the FFT of the two images.</p>
 
-    <p>Here are some other hybrid images you may want to look at:</p>
+    <p>Here are some other hybrid images created from different source pairs:</p>
 
-    <div class="gallery">
-        <div class="gallery-item">
-            <img src="media/hybrid_tchaikovsky_kreisler.jpg" alt="Tchaikovsky Kreisler hybrid">
-            <div class="image-caption">Tchaikovsky & Kreisler Hybrid</div>
+    <h4>Tchaikovsky & Kreisler Hybrid</h4>
+    <p>Original source images:</p>
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/tchaikovsky.jpg" alt="Tchaikovsky original">
+            <div class="image-caption">Tchaikovsky (Low Frequencies)</div>
         </div>
-        <div class="gallery-item">
-            <img src="media/hybrid_tiger_lion.png" alt="Tiger Lion hybrid">
-            <div class="image-caption">Tiger & Lion Hybrid</div>
+        <div class="small-gallery-item">
+            <img src="media/kreisler.jpg" alt="Kreisler original">
+            <div class="image-caption">Kreisler (High Frequencies)</div>
         </div>
+    </div>
+    
+    <div class="image-container">
+        <img src="media/hybrid_tchaikovsky_kreisler.jpg" alt="Tchaikovsky Kreisler hybrid">
+        <div class="image-caption">Tchaikovsky & Kreisler Hybrid Result</div>
+    </div>
+
+    <h4>Tiger & Lion Hybrid</h4>
+    <p>Original source images:</p>
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/tiger.jpg" alt="Tiger original">
+            <div class="image-caption">Tiger (Low Frequencies)</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/lion.jpg" alt="Lion original">
+            <div class="image-caption">Lion (High Frequencies)</div>
+        </div>
+    </div>
+    
+    <div class="image-container">
+        <img src="media/hybrid_tiger_lion.png" alt="Tiger Lion hybrid">
+        <div class="image-caption">Tiger & Lion Hybrid Result</div>
     </div>
 
     <h3>2.3 & 2.4 Multiresolution Blending</h3>
@@ -341,7 +373,18 @@ assert np.allclose(camera_man_gaussian_partial_y_once, camera_man_gaussian_parti
         <div class="image-caption">Optimized Laplacian Stack Analysis - Orange, Apple, and Oraple Frequency Decomposition</div>
     </div>
 
-    <p>Here it is shown in another example:</p>
+    <h4>Mango & Pear Multiresolution Blend</h4>
+    <p>Original source images:</p>
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/mango.jpg" alt="Mango original">
+            <div class="image-caption">Mango (Left Side)</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/pear.jpg" alt="Pear original">
+            <div class="image-caption">Pear (Right Side)</div>
+        </div>
+    </div>
 
     <div class="image-container">
         <img src="media/mango_pear.jpg" alt="Mango pear blend">
