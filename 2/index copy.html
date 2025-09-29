@@ -1,0 +1,153 @@
+1.1 convolution
+
+
+Here are the two implementations
+```python
+def conv2d_4for(image, kernel):
+    # use odd sized kernel
+    padded_shape = (image.shape[0] + 2 * (kernel.shape[0] // 2), image.shape[1] + 2 * (kernel.shape[1] // 2))
+    padded_image = np.zeros(padded_shape)
+    padded_image[kernel.shape[0] // 2: -kernel.shape[0] // 2 + 1, kernel.shape[1] // 2: -kernel.shape[1] // 2 + 1] = image
+
+    output_shape = (padded_image.shape[0] - kernel.shape[0] + 1, padded_image.shape[1] - kernel.shape[1] + 1)
+    output = np.zeros(output_shape)
+
+    for i in range(output_shape[0]):
+        for j in range(output_shape[1]):
+            for ki in range(kernel.shape[0]):
+                for kj in range(kernel.shape[1]):
+                    output[i, j] += padded_image[i+ki, j+kj] * kernel[ki, kj]
+
+    return output
+
+
+def conv2d_2for(image, kernel):
+    # use odd sized kernel
+    padded_shape = (image.shape[0] + 2 * (kernel.shape[0] // 2), image.shape[1] + 2 * (kernel.shape[1] // 2))
+    # print(padded_shape)
+    padded_image = np.zeros(padded_shape)
+    padded_image[kernel.shape[0] // 2: -kernel.shape[0] // 2 + 1, kernel.shape[1] // 2: -kernel.shape[1] // 2 + 1] = image
+
+    output_shape = (padded_image.shape[0] - kernel.shape[0] + 1, padded_image.shape[1] - kernel.shape[1] + 1)
+    # print(output_shape)
+    output = np.zeros(output_shape)
+
+    for i in range(output_shape[0]):
+        for j in range(output_shape[1]):
+            output[i, j] = np.sum(padded_image[i:i+kernel.shape[0], j:j+kernel.shape[1]] * kernel)
+
+    return output
+```
+
+We see that the two implementations as well as the scipy.signal.convolve2d function (when set to 'same' mode) all give the same output, but the speeds are significantly different with scipy taking a few seconds, 2d for loop in the tens of seconds, and 4d for loop in the multiple minutes when ran on test images.
+
+Here are some images that we used this function on:
+
+box filter: box_filter.jpg
+d_x: d_x_conv.jpg
+d_y: d_y_conv.jpg
+img_gray: img_gray.jpg
+
+1.2 Finite Difference Operator
+
+Here is the original cameraman image:
+cameraman: cameraman.jpg
+
+
+Here are the results of the result when we run a convolution with d_x and d_y which are the finite difference operators on the cameraman image:
+
+cameraman_d_x_conv: cameraman_d_x_conv.jpg
+cameraman_d_y_conv: cameraman_d_y_conv.jpg
+
+This doesn't show much so instead, we check different possible thresholds for the edges to make a binary plot. The threshold that we found was most useful was about 15, which is shown in the following images:
+cameraman_d_x_conv_binary: cameraman_d_x_conv_binary.jpg
+cameraman_d_y_conv_binary: cameraman_d_y_conv_binary.jpg
+
+1.3 gaussian filter
+
+Here are the results of the result when we run a convolution with the gaussian filter:
+
+gaussian_conv: gaussian_conv.jpg
+
+We further check the partial derivatives of the gaussian filter:
+
+gaussian_partial_x_conv: gaussian_partial_x_conv.jpg
+gaussian_partial_y_conv: gaussian_partial_y_conv.jpg
+
+We see that the partial derivatives of the gaussian filter are very similar to the finite difference operators, which is expected.
+
+We also verify that this can be done with a single convolution, which is possible since convolutions are associative, using something like the following code:
+
+```python
+
+single_conv_filter_d_x = scipy.signal.convolve2d(two_d_gaussian, d_x, mode='same')
+single_conv_filter_d_y = scipy.signal.convolve2d(two_d_gaussian, d_y, mode='same')
+
+camera_man_gaussian_partial_x_once = scipy.signal.convolve2d(camera_man, single_conv_filter_d_x, mode='same')
+camera_man_gaussian_partial_y_once = scipy.signal.convolve2d(camera_man, single_conv_filter_d_y, mode='same')
+
+# camera_man_gaussian_partial_x is the result after doing two convolution
+assert np.allclose(camera_man_gaussian_partial_x_once, camera_man_gaussian_partial_x)
+assert np.allclose(camera_man_gaussian_partial_y_once, camera_man_gaussian_partial_y)
+```
+
+We also show the output of the binary plots here:
+
+camera_man_gaussian_partial_x_once_binary: camera_man_gaussian_partial_x_once_binary.jpg
+camera_man_gaussian_partial_y_once_binary: camera_man_gaussian_partial_y_once_binary.jpg
+
+
+We see thtat the ouptut is much smoother than the original because the gaussian filter helps reduce the noise in the image.
+
+2. Frequency stuff
+
+2.1 Getting low and high frequencies to sharpen images
+
+To get the low and high frequencies, we can use a gaussian filter to get the lower frequencies as the higher frequencies will be lost to the filter and then subtract it from the original to get the remaining frequencies, which will be the high frequencies.
+
+The following shows the above process on the taj mahal:
+
+taj_freq.png
+
+We can see the output of various values of alpha:
+
+taj_sharp.png
+
+We can see that the output is much sharper when alpha is larger.
+
+2.2 hybrid image creation
+
+To get a hybrid image, the  steps go as follows: 
+
+1. Align the two images
+2. Get the low and high frequencies of the two images
+3. Combine the the low frequency of one image with the high frequency of the other image
+
+To get the low and high frequencies, we can use a gaussian filter to get the lower frequencies as the higher frequencies will be lost to the filter and then subtract it from the original to get the remaining frequencies, which will be the high frequencies.
+
+Here is the output of the hybrid image creation with various steps included:
+
+hybrid_fft.png
+
+
+You can see that the fft of the hybrid is equal to the sum/average of the fft of the two images
+
+Here are some other hybrid images you may want to look at:
+
+
+hybrid_tchaikovsky_kreisler.png
+
+hybrid_tiger_lion.png
+
+
+2.3,2.4 resolution blending
+
+
+Here is the process of the resolution blending:
+
+optimized_laplacation_stack_analysis.png
+
+Here is it shown in another example: 
+
+mango_pear.jpg
+

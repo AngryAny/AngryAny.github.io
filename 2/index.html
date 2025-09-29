@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Filtering and Frequency Analysis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            color: #5d6d7e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .image-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .gallery-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .small-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .small-gallery-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .small-gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Filtering and Frequency Analysis</h1>
+    
+    <div class="intro">
+        <p>This blog explores image filtering techniques, frequency analysis, and multiresolution blending. We'll cover convolution operations, edge detection, hybrid image creation, and advanced blending techniques using Gaussian and Laplacian pyramids.</p>
+    </div>
+
+    <h2>1.1 Convolution</h2>
+
+    <p>Here are the two implementations of 2D convolution:</p>
+
+    <div class="code-block">def conv2d_4for(image, kernel):
+    # use odd sized kernel
+    padded_shape = (image.shape[0] + 2 * (kernel.shape[0] // 2), image.shape[1] + 2 * (kernel.shape[1] // 2))
+    padded_image = np.zeros(padded_shape)
+    padded_image[kernel.shape[0] // 2: -kernel.shape[0] // 2 + 1, kernel.shape[1] // 2: -kernel.shape[1] // 2 + 1] = image
+
+    output_shape = (padded_image.shape[0] - kernel.shape[0] + 1, padded_image.shape[1] - kernel.shape[1] + 1)
+    output = np.zeros(output_shape)
+
+    for i in range(output_shape[0]):
+        for j in range(output_shape[1]):
+            for ki in range(kernel.shape[0]):
+                for kj in range(kernel.shape[1]):
+                    output[i, j] += padded_image[i+ki, j+kj] * kernel[ki, kj]
+
+    return output
+
+
+def conv2d_2for(image, kernel):
+    # use odd sized kernel
+    padded_shape = (image.shape[0] + 2 * (kernel.shape[0] // 2), image.shape[1] + 2 * (kernel.shape[1] // 2))
+    padded_image = np.zeros(padded_shape)
+    padded_image[kernel.shape[0] // 2: -kernel.shape[0] // 2 + 1, kernel.shape[1] // 2: -kernel.shape[1] // 2 + 1] = image
+
+    output_shape = (padded_image.shape[0] - kernel.shape[0] + 1, padded_image.shape[1] - kernel.shape[1] + 1)
+    output = np.zeros(output_shape)
+
+    for i in range(output_shape[0]):
+        for j in range(output_shape[1]):
+            output[i, j] = np.sum(padded_image[i:i+kernel.shape[0], j:j+kernel.shape[1]] * kernel)
+
+    return output</div>
+
+    <p>We see that the two implementations as well as the scipy.signal.convolve2d function (when set to 'same' mode) all give the same output, but the speeds are significantly different with scipy taking a few seconds, 2d for loop in the tens of seconds, and 4d for loop in the multiple minutes when ran on test images.</p>
+
+    <p>Here are some images that we used this function on:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/box_filter.jpg" alt="Box filter result">
+            <div class="image-caption">Box Filter</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/d_x_conv.jpg" alt="D_x convolution">
+            <div class="image-caption">D_x Convolution</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/d_y_conv.jpg" alt="D_y convolution">
+            <div class="image-caption">D_y Convolution</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/img_gray.jpg" alt="Grayscale image">
+            <div class="image-caption">Grayscale Image</div>
+        </div>
+    </div>
+
+    <h3>1.2 Finite Difference Operator</h3>
+
+    <p>Here is the original cameraman image:</p>
+
+    <div class="image-container">
+        <img src="media/cameraman.jpg" alt="Cameraman original">
+        <div class="image-caption">Original Cameraman Image</div>
+    </div>
+
+    <p>Here are the results when we run a convolution with d_x and d_y which are the finite difference operators on the cameraman image:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/cameraman_d_x_conv.jpg" alt="Cameraman d_x convolution">
+            <div class="image-caption">Cameraman D_x Convolution</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/cameraman_d_y_conv.jpg" alt="Cameraman d_y convolution">
+            <div class="image-caption">Cameraman D_y Convolution</div>
+        </div>
+    </div>
+
+    <p>This doesn't show much so instead, we check different possible thresholds for the edges to make a binary plot. The threshold that we found was most useful was about 15, which is shown in the following images:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/cameraman_d_x_conv_binary.jpg" alt="Cameraman d_x binary">
+            <div class="image-caption">Cameraman D_x Binary (threshold=15)</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/cameraman_d_y_conv_binary.jpg" alt="Cameraman d_y binary">
+            <div class="image-caption">Cameraman D_y Binary (threshold=15)</div>
+        </div>
+    </div>
+
+    <h3>1.3 Gaussian Filter</h3>
+
+    <p>Here are the results when we run a convolution with the gaussian filter:</p>
+
+    <div class="image-container">
+        <img src="media/gaussian_conv.jpg" alt="Gaussian convolution">
+        <div class="image-caption">Gaussian Convolution Result</div>
+    </div>
+
+    <p>We further check the partial derivatives of the gaussian filter:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/gaussian_partial_x_conv.jpg" alt="Gaussian partial x">
+            <div class="image-caption">Gaussian Partial X</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/gaussian_partial_y_conv.jpg" alt="Gaussian partial y">
+            <div class="image-caption">Gaussian Partial Y</div>
+        </div>
+    </div>
+
+    <p>We see that the partial derivatives of the gaussian filter are very similar to the finite difference operators, which is expected.</p>
+
+    <p>We also verify that this can be done with a single convolution, which is possible since convolutions are associative, using something like the following code:</p>
+
+    <div class="code-block">single_conv_filter_d_x = scipy.signal.convolve2d(two_d_gaussian, d_x, mode='same')
+single_conv_filter_d_y = scipy.signal.convolve2d(two_d_gaussian, d_y, mode='same')
+
+camera_man_gaussian_partial_x_once = scipy.signal.convolve2d(camera_man, single_conv_filter_d_x, mode='same')
+camera_man_gaussian_partial_y_once = scipy.signal.convolve2d(camera_man, single_conv_filter_d_y, mode='same')
+
+# camera_man_gaussian_partial_x is the result after doing two convolution
+assert np.allclose(camera_man_gaussian_partial_x_once, camera_man_gaussian_partial_x)
+assert np.allclose(camera_man_gaussian_partial_y_once, camera_man_gaussian_partial_y)</div>
+
+    <p>We also show the output of the binary plots here:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/camera_man_gaussian_partial_x_binary.jpg" alt="Gaussian partial x binary">
+            <div class="image-caption">Gaussian Partial X Binary</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/camera_man_gaussian_partial_y_binary.jpg" alt="Gaussian partial y binary">
+            <div class="image-caption">Gaussian Partial Y Binary</div>
+        </div>
+    </div>
+
+    <p>We see that the output is much smoother than the original because the gaussian filter helps reduce the noise in the image.</p>
+
+    <h2>2. Frequency Analysis</h2>
+
+    <h3>2.1 Getting Low and High Frequencies to Sharpen Images</h3>
+
+    <p>To get the low and high frequencies, we can use a gaussian filter to get the lower frequencies as the higher frequencies will be lost to the filter and then subtract it from the original to get the remaining frequencies, which will be the high frequencies.</p>
+
+    <p>The following shows the above process on the Taj Mahal:</p>
+
+    <div class="image-container">
+        <img src="media/taj_freq.png" alt="Taj frequency analysis">
+        <div class="image-caption">Taj Mahal Frequency Analysis - Low and High Frequency Separation</div>
+    </div>
+
+    <p>We can see the output of various values of alpha:</p>
+
+    <div class="image-container">
+        <img src="media/taj_sharp.png" alt="Taj sharpening">
+        <div class="image-caption">Taj Mahal Sharpening with Different Alpha Values</div>
+    </div>
+
+    <p>We can see that the output is much sharper when alpha is larger.</p>
+
+    <h3>2.2 Hybrid Image Creation</h3>
+
+    <p>To get a hybrid image, the steps go as follows:</p>
+    <ol>
+        <li>Align the two images</li>
+        <li>Get the low and high frequencies of the two images</li>
+        <li>Combine the low frequency of one image with the high frequency of the other image</li>
+    </ol>
+
+    <p>To get the low and high frequencies, we can use a gaussian filter to get the lower frequencies as the higher frequencies will be lost to the filter and then subtract it from the original to get the remaining frequencies, which will be the high frequencies.</p>
+
+    <p>Here is the output of the hybrid image creation with various steps included:</p>
+
+    <div class="image-container">
+        <img src="media/hybrid_fft.png" alt="Hybrid FFT analysis">
+        <div class="image-caption">Hybrid Image Creation Process with FFT Analysis</div>
+    </div>
+
+    <p>You can see that the FFT of the hybrid is equal to the sum/average of the FFT of the two images.</p>
+
+    <p>Here are some other hybrid images you may want to look at:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="media/hybrid_tchaikovsky_kreisler.png" alt="Tchaikovsky Kreisler hybrid">
+            <div class="image-caption">Tchaikovsky & Kreisler Hybrid</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/hybrid_tiger_lion.png" alt="Tiger Lion hybrid">
+            <div class="image-caption">Tiger & Lion Hybrid</div>
+        </div>
+    </div>
+
+    <h3>2.3 & 2.4 Multiresolution Blending</h3>
+
+    <p>Here is the process of the multiresolution blending using Gaussian and Laplacian stacks:</p>
+
+    <div class="image-container">
+        <img src="media/optimized_laplacation_stack_analysis.png" alt="Laplacian stack analysis">
+        <div class="image-caption">Optimized Laplacian Stack Analysis - Orange, Apple, and Oraple Frequency Decomposition</div>
+    </div>
+
+    <p>Here it is shown in another example:</p>
+
+    <div class="image-container">
+        <img src="media/mango_pear.jpg" alt="Mango pear blend">
+        <div class="image-caption">Mango and Pear Multiresolution Blending Result</div>
+    </div>
+
+    <div class="intro">
+        <p><strong>Key Insights:</strong> The multiresolution blending technique allows for seamless combination of images by working in different frequency bands. High frequencies are blended sharply while low frequencies transition smoothly, creating natural-looking results without visible seams.</p>
+    </div>
+
+</body>
+</html>
