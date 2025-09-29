@@ -213,7 +213,7 @@ def conv2d_2for(image, kernel):
         </div>
     </div>
 
-    <p>This doesn't show much so instead, we check different possible thresholds for the edges to make a binary plot. The threshold that we found was most useful was about 15, which is shown in the following images:</p>
+    <p>This doesn't show much so instead, we check different possible thresholds for the edges to make a binary plot. The threshold that we found was most useful was about 15. This was chosen as a higher threshold did not show the tower in the background whereas a lower threshold showed little specs in the sky which is shown in the following images:</p>
 
     <div class="small-gallery">
         <div class="small-gallery-item">
@@ -337,7 +337,7 @@ assert np.allclose(camera_man_gaussian_partial_y_once, camera_man_gaussian_parti
     <p>Here is the process of the multiresolution blending using Gaussian and Laplacian stacks:</p>
 
     <div class="image-container">
-        <img src="media/optimized_laplacian_stack_analysis.png" alt="Laplacian stack analysis">
+        <img src="media/laplacian_stack_analysis.png" alt="Laplacian stack analysis">
         <div class="image-caption">Optimized Laplacian Stack Analysis - Orange, Apple, and Oraple Frequency Decomposition</div>
     </div>
 
