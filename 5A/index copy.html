@@ -1,0 +1,316 @@
+
+
+Part 0
+
+
+Deliverable:
+Come up with some interesting text prompts and generate their embeddings.
+Choose 3 of your prompts to generate images and display the caption and the output of the model. Reflect on the quality of the outputs and their relationships to the text prompts. Make sure to try at least 2 different num_inference_steps values.
+Report the random seed that you're using here. You should use the same seed all subsequent parts.
+
+
+Answer:
+I was having trouble so I decided to use the prompts already generated. I generated the following prompts: lithograph of a waterfall (lithograph_waterfall.png), a lithograph of a skull (lithograph_skull.png), and a man with a hat (man_hat.png).
+
+For the lithograph of a waterfall, I used the following prompt: "A lithograph of a waterfall".
+For the lithograph of a skull, I used the following prompt: "A lithograph of a skull".
+For the drawing of a man with a hat, I used the following prompt: "A drawing of a man with a hat".
+
+I used the same random see of 723 for all parts. The drawing of a man with a hat seems to look the best. It may be because it is asking for something that looks like a photo instead of asking for a lithograph which usually is not as realistic/full of details. The inference steps were 20 for skull and 50 for the other two photos.
+
+Part 1.1 Implementing the Forward Process
+
+Deliverable:
+Implement the noisy_im = forward(im, t) function
+Show the Campanile at noise level [250, 500, 750].
+
+Answer:
+We implemented a forward function to help add noise to an image based on the time. The implementation is not included here but is available in the notebook submitted. Here are the outputs for the campanile at noise levels 250, 500, and 750 (out of 1000). The original campanile image is also show:
+
+
+campanile_250.png
+campanile_500.png
+campanile_750.png
+
+We can see that as the noise level increases, the image becomes more and more noisy.
+
+Part 1.2  Classical Denoising
+
+For each of the 3 noisy Campanile images from the previous part, show your best Gaussian-denoised version side by side.
+
+Answer:
+We show the gaussian denoised versions of the above photos. Here are the outputs for the campanile at noise levels 250, 500, and 750 (out of 1000). The blurred original campanile image is also shown:
+
+campanile_gaussian_000.png
+campanile_gaussian_250.png
+campanile_gaussian_500.png
+campanile_gaussian_750.png
+
+Part 1.3 One-Step Denoising
+
+
+deliverable:
+For the 3 noisy images from 1.2 (t = [250, 500, 750]):
+Use your forward function to add noise to your Campanile.
+Estimate the noise in the new noisy image, by passing it through stage_1.unet
+Remove the noise from the noisy image to obtain an estimate of the original image.
+Visualize the original image, the noisy image, and the estimate of the original image
+
+Answer:
+We added some noise and used a 1 step denoising model using a unet to try and denoise the image. The results are as follows. 
+
+campanile.png
+
+noisy campanile:
+campanile_250.png
+campanile_500.png
+campanile_750.png
+
+denoised campanile:
+campanile_one_step_250.png
+campanile_one_step_500.png
+campanile_one_step_750.png
+
+We can see that the denoised campanile is fairly close, with the lower noise levels being the closest
+
+1.4
+
+Create strided_timesteps: a list of monotonically decreasing timesteps, starting at 990, with a stride of 30, eventually reaching 0. Also initialize the timesteps using the function stage_1.scheduler.set_timesteps(timesteps=strided_timesteps)
+Complete the iterative_denoise function
+Show the noisy Campanile every 5th loop of denoising (it should gradually become less noisy)
+Show the final predicted clean image, using iterative denoising
+Show the predicted clean image using only a single denoising step, as was done in the previous part. This should look much worse.
+Show the predicted clean image using gaussian blurring, as was done in part 1.2.
+
+Answer
+the campanile at every 5th loop of denoising looks like this:
+
+campanile_timestep_10.png
+campanile_timestep_15.png
+campanile_timestep_20.png
+campanile_timestep_25.png
+campanile_timestep_30.png
+
+The final predicted clean image using iterative denoising looks like this:
+
+campanile_timestep_final.png
+
+The predicted clean image using only a single denoising step, as was done in the previous part. It looks much worse than the iterative denoising
+
+campanile_one_step_500
+
+The predicted clean image using gaussian blurring, as was done in part 1.2.
+
+campanile_gaussian_500.png
+
+Part 1.5 Diffusion Model Sampling
+
+deliverables:
+
+Show 5 sampled images.
+
+answer:
+
+We used the iterative denoising model from the previous part to try creating 5 sampled images by denoising iteratively from gaussian noise. The results are as follows:
+
+random_image_1.png
+random_image_2.png
+random_image_3.png
+random_image_4.png
+random_image_5.png
+
+Part 1.6
+
+
+deliverable:
+Implement the iterative_denoise_cfg function
+Show 5 images of "a high quality photo" with a CFG scale of 
+. Now this prompt becomes a condition (but fairly weak) to generate conditional noise! You will use your customized prompts as stronger conditions in part 1.7 - part 1.9.
+
+Answer:
+
+Next, we implemented the iterative_denoise_cfg function to try and denoise the image by using conditional noise of "a high quality photo" with a CFG scale of 7 against the null prompt "". The results are as follows:
+
+conditonal_img_1.png
+conditonal_img_2.png
+conditonal_img_3.png
+conditonal_img_4.png
+conditonal_img_5.png
+
+
+Part 1.7 Image-to-image Translation
+
+deliverable:
+
+Edits of the Campanile image, using the given prompt at noise levels [1, 3, 5, 7, 10, 20] with the conditional text prompt "a high quality photo"
+Edits of 2 of your own test images, using the same procedure.
+
+Answer:
+
+I tried using image-to-image translation to edit the campanile image as well as images I have found of the redwood forest and grand canyon by using the prompt "a high quality photo" with a CFG scale of 7 against the null prompt "". The results are as follows:
+
+original campanile:
+campanile.png
+edited campanile:
+campanile_1.png
+campanile_3.png
+campanile_5.png
+campanile_7.png
+campanile_10.png
+campanile_20.png
+
+original redwood forest:
+redwood.png
+edited redwood forest:
+redwood_1.png
+redwood_3.png
+redwood_5.png
+redwood_7.png
+redwood_10.png
+redwood_20.png
+
+original grand canyon:
+grand_canyon.png
+edited grand canyon:
+grand_canyon_1.png
+grand_canyon_3.png
+grand_canyon_5.png
+grand_canyon_7.png
+grand_canyon_10.png
+grand_canyon_20.png
+
+
+1.7.1: Editing Hand-Drawn and Web Images
+
+deliverable:
+Edits of the Campanile image, using the given prompt at noise levels [1, 3, 5, 7, 10, 20] with the conditional text prompt "a high quality photo"
+Edits of 2 of your own test images, using the same procedure.
+
+answer:
+I also tried editing some hand drawn and web images with the same prompt of "a high quality photo" with a CFG scale of 7 against the null prompt "". Here are the results:
+
+web image:
+avocado.png
+edited avocado:
+avocado_1.png
+avocado_3.png
+avocado_5.png
+avocado_7.png
+avocado_10.png
+avocado_20.png
+
+hand drawn image (face):
+face.png
+edited hand drawn:
+face_1.png
+face_3.png
+face_5.png
+face_7.png
+face_10.png
+face_20.png
+
+hand drawn image (flower    ):
+flower.png
+edited flower:
+flower_1.png
+flower_3.png
+flower_5.png
+flower_7.png
+flower_10.png
+flower_20.png
+
+1.7.2: inpainting
+
+deliverable:
+A properly implemented inpaint function
+The Campanile inpainted (feel free to use your own mask)
+2 of your own images edited (come up with your own mask)
+look at the results from this paper for inspiration
+
+
+answer:
+I also tried inpainting the 3 images from 1.7. Here are the results:
+
+campanile inpainted:
+campanile_inpaint.png
+
+avocado inpainted:
+avocado_inpaint.png
+
+face inpainted:
+face_inpaint.png
+
+
+1.7.3 image translation
+
+deliverable:
+
+Edits of the Campanile, using the given prompt at noise levels [1, 3, 5, 7, 10, 20]
+Edits of 2 of your own test images, using the same procedure
+
+answer:
+I also tried using image translation model to translate the 3 images from 1.7 with the prompt "a photo of a rocket ship". Here are the results:
+
+campanile edited:
+campanile_rocket_1.png
+campanile_rocket_3.png
+campanile_rocket_5.png
+campanile_rocket_7.png
+campanile_rocket_10.png
+campanile_rocket_20.png
+
+redwood edited:
+redwood_rocket_1.png
+redwood_rocket_3.png
+redwood_rocket_5.png
+redwood_rocket_7.png
+redwood_rocket_10.png
+redwood_rocket_20.png
+
+grand canyon edited:
+grand_canyon_rocket_1.png
+grand_canyon_rocket_3.png
+grand_canyon_rocket_5.png
+grand_canyon_rocket_7.png
+grand_canyon_rocket_10.png
+grand_canyon_rocket_20.png
+
+1.8
+
+deliverable:
+Correctly implemented visual_anagrams function
+2 illusions of your choice that change appearance when you flip it upside down (feel free to take inspirations from this page).
+
+
+answer:
+Next, we tried to create a visual anagram where we can see two different photos when we flip it upside down. Here are the results
+
+man_campfire.png
+
+This photo is a visual anagram of a man and a campfire. When we flip it upside down, we can see a campfire whereas you can see a man in the original photo. This was done using the prompts of "an oil painting of an old man" and "an oil painting of people around a campfire"
+
+skull_village.png
+
+This photo is a visual anagram of a skull and a village. When we flip it upside down, we can see a village whereas you can see a skull in the original photo. This was done using the prompts of "a lithograph of a skull" and "an oil painting of a snowy mountain village"
+
+
+
+1.9
+
+Correctly implemented make_hybrids function
+2 hybrid images of your choosing (feel free to take inspirations from this page).
+
+answer:
+
+finally, we created 2 hybrid images of our choosing. Here are the results:
+
+The first, is a hybrid as in the example of water and skull
+
+water_skull.png
+
+The second, is a hybrid of a man and a skull
+
+man_skull.png
+
+It looks like a man but the way that the torso is shaped/missing along with the beard looking like teeth makes it look like a skull.
+

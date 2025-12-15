@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 5A: Diffusion Models</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        h3 {
+            color: #5d6d7e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #7d8a97;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .image-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .gallery-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .small-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .small-gallery-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .small-gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .six-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .six-gallery-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .six-gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Project 5A: Diffusion Models</h1>
+    
+    <div class="intro">
+        <p>This project explores diffusion models for image generation and manipulation. We implement the forward noising process, classical and neural denoising, classifier-free guidance, and various image editing techniques including inpainting, image-to-image translation, visual anagrams, and hybrid images.</p>
+    </div>
+
+    <h2>Part 0: Setup and Text-to-Image Generation</h2>
+
+    <p>I was having trouble so I decided to use the prompts already generated. I generated the following images using different prompts:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/lithograph_waterfall.png" alt="Lithograph of a waterfall">
+            <div class="image-caption">"A lithograph of a waterfall" (50 steps)</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/lithograph_skull.png" alt="Lithograph of a skull">
+            <div class="image-caption">"A lithograph of a skull" (20 steps)</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/man_hat.png" alt="Man with a hat">
+            <div class="image-caption">"A drawing of a man with a hat" (50 steps)</div>
+        </div>
+    </div>
+
+    <p>I used the same random seed of 723 for all parts. The drawing of a man with a hat seems to look the best. It may be because it is asking for something that looks like a photo instead of asking for a lithograph which usually is not as realistic or full of details.</p>
+
+    <h2>Part 1.1: Implementing the Forward Process</h2>
+
+    <p>We implemented a forward function to add noise to an image based on the timestep. Here are the outputs for the campanile at noise levels 250, 500, and 750 (out of 1000). The original campanile image is also shown:</p>
+
+    <div class="image-container">
+        <img src="media/campanile.png" alt="Original Campanile">
+        <div class="image-caption">Original Campanile</div>
+    </div>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/campanile_250.png" alt="Campanile at t=250">
+            <div class="image-caption">Noise Level t=250</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_500.png" alt="Campanile at t=500">
+            <div class="image-caption">Noise Level t=500</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_750.png" alt="Campanile at t=750">
+            <div class="image-caption">Noise Level t=750</div>
+        </div>
+    </div>
+
+    <p>We can see that as the noise level increases, the image becomes more and more noisy.</p>
+
+    <h2>Part 1.2: Classical Denoising</h2>
+
+    <p>We show the Gaussian denoised versions of the above photos. Here are the outputs for the campanile at noise levels 0, 250, 500, and 750:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="media/campanile_gaussian_000.png" alt="Gaussian denoised t=0">
+            <div class="image-caption">Gaussian Blur (Original)</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_gaussian_250.png" alt="Gaussian denoised t=250">
+            <div class="image-caption">Gaussian Denoised t=250</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_gaussian_500.png" alt="Gaussian denoised t=500">
+            <div class="image-caption">Gaussian Denoised t=500</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_gaussian_750.png" alt="Gaussian denoised t=750">
+            <div class="image-caption">Gaussian Denoised t=750</div>
+        </div>
+    </div>
+
+    <h2>Part 1.3: One-Step Denoising</h2>
+
+    <p>We added some noise and used a 1-step denoising model using a UNet to try and denoise the image. The results are as follows:</p>
+
+    <h4>Noisy Campanile:</h4>
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/campanile_250.png" alt="Noisy campanile t=250">
+            <div class="image-caption">Noisy t=250</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_500.png" alt="Noisy campanile t=500">
+            <div class="image-caption">Noisy t=500</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_750.png" alt="Noisy campanile t=750">
+            <div class="image-caption">Noisy t=750</div>
+        </div>
+    </div>
+
+    <h4>One-Step Denoised Campanile:</h4>
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/campanile_one_step_250.png" alt="One-step denoised t=250">
+            <div class="image-caption">One-Step Denoised t=250</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_one_step_500.png" alt="One-step denoised t=500">
+            <div class="image-caption">One-Step Denoised t=500</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_one_step_750.png" alt="One-step denoised t=750">
+            <div class="image-caption">One-Step Denoised t=750</div>
+        </div>
+    </div>
+
+    <p>We can see that the denoised campanile is fairly close, with the lower noise levels being the closest.</p>
+
+    <h2>Part 1.4: Iterative Denoising</h2>
+
+    <p>We created strided timesteps starting at 990 with a stride of 30, eventually reaching 0. The campanile at every 5th loop of denoising looks like this:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="media/campanile_timestep_10.png" alt="Timestep 10">
+            <div class="image-caption">Loop 10</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_timestep_15.png" alt="Timestep 15">
+            <div class="image-caption">Loop 15</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_timestep_20.png" alt="Timestep 20">
+            <div class="image-caption">Loop 20</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_timestep_25.png" alt="Timestep 25">
+            <div class="image-caption">Loop 25</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/campanile_timestep_30.png" alt="Timestep 30">
+            <div class="image-caption">Loop 30</div>
+        </div>
+    </div>
+
+    <h4>Final Predicted Clean Image (Iterative Denoising):</h4>
+    <div class="image-container">
+        <img src="media/campanile_timestep_final.png" alt="Final iterative denoising result">
+        <div class="image-caption">Final Result - Iterative Denoising</div>
+    </div>
+
+    <h4>Comparison with One-Step and Gaussian:</h4>
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/campanile_one_step_500.png" alt="One-step denoising">
+            <div class="image-caption">One-Step Denoising (Much Worse)</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/campanile_gaussian_500.png" alt="Gaussian blur">
+            <div class="image-caption">Gaussian Blur</div>
+        </div>
+    </div>
+
+    <h2>Part 1.5: Diffusion Model Sampling</h2>
+
+    <p>We used the iterative denoising model to create 5 sampled images by denoising iteratively from Gaussian noise:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="media/random_image_1.png" alt="Random image 1">
+            <div class="image-caption">Sample 1</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/random_image_2.png" alt="Random image 2">
+            <div class="image-caption">Sample 2</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/random_image_3.png" alt="Random image 3">
+            <div class="image-caption">Sample 3</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/random_image_4.png" alt="Random image 4">
+            <div class="image-caption">Sample 4</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/random_image_5.png" alt="Random image 5">
+            <div class="image-caption">Sample 5</div>
+        </div>
+    </div>
+
+    <h2>Part 1.6: Classifier-Free Guidance (CFG)</h2>
+
+    <p>We implemented the iterative_denoise_cfg function to denoise images using the conditional prompt "a high quality photo" with a CFG scale of 7 against the null prompt. The results are as follows:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="media/conditional_img_1.png" alt="Conditional image 1">
+            <div class="image-caption">CFG Sample 1</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/conditional_img_2.png" alt="Conditional image 2">
+            <div class="image-caption">CFG Sample 2</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/conditional_img_3.png" alt="Conditional image 3">
+            <div class="image-caption">CFG Sample 3</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/conditional_img_4.png" alt="Conditional image 4">
+            <div class="image-caption">CFG Sample 4</div>
+        </div>
+        <div class="gallery-item">
+            <img src="media/conditional_img_5.png" alt="Conditional image 5">
+            <div class="image-caption">CFG Sample 5</div>
+        </div>
+    </div>
+
+    <h2>Part 1.7: Image-to-Image Translation</h2>
+
+    <p>I tried using image-to-image translation to edit images using the prompt "a high quality photo" with a CFG scale of 7. The results are shown at noise levels [1, 3, 5, 7, 10, 20]:</p>
+
+    <h3>Campanile</h3>
+    <div class="image-container">
+        <img src="media/campanile.png" alt="Original Campanile">
+        <div class="image-caption">Original Campanile</div>
+    </div>
+
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/campanile_1.png" alt="Campanile noise 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_3.png" alt="Campanile noise 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_5.png" alt="Campanile noise 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_7.png" alt="Campanile noise 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_10.png" alt="Campanile noise 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_20.png" alt="Campanile noise 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h3>Redwood Forest</h3>
+    <div class="image-container">
+        <img src="media/redwood.png" alt="Original Redwood">
+        <div class="image-caption">Original Redwood Forest</div>
+    </div>
+
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/redwood_1.png" alt="Redwood noise 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_3.png" alt="Redwood noise 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_5.png" alt="Redwood noise 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_7.png" alt="Redwood noise 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_10.png" alt="Redwood noise 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_20.png" alt="Redwood noise 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h3>Grand Canyon</h3>
+    <div class="image-container">
+        <img src="media/grand_canyon.png" alt="Original Grand Canyon">
+        <div class="image-caption">Original Grand Canyon</div>
+    </div>
+
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_1.png" alt="Grand Canyon noise 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_3.png" alt="Grand Canyon noise 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_5.png" alt="Grand Canyon noise 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_7.png" alt="Grand Canyon noise 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_10.png" alt="Grand Canyon noise 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_20.png" alt="Grand Canyon noise 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h2>Part 1.7.1: Editing Hand-Drawn and Web Images</h2>
+
+    <p>I also tried editing some hand drawn and web images with the same prompt "a high quality photo":</p>
+
+    <h3>Web Image: Avocado</h3>
+    <div class="image-container">
+        <img src="media/avocado.png" alt="Original Avocado">
+        <div class="image-caption">Original Avocado (Web Image)</div>
+    </div>
+
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/avocado_1.png" alt="Avocado noise 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/avocado_3.png" alt="Avocado noise 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/avocado_5.png" alt="Avocado noise 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/avocado_7.png" alt="Avocado noise 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/avocado_10.png" alt="Avocado noise 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/avocado_20.png" alt="Avocado noise 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h3>Hand-Drawn Image: Face</h3>
+    <div class="image-container">
+        <img src="media/face.png" alt="Original Face">
+        <div class="image-caption">Original Hand-Drawn Face</div>
+    </div>
+
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/face_1.png" alt="Face noise 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/face_3.png" alt="Face noise 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/face_5.png" alt="Face noise 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/face_7.png" alt="Face noise 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/face_10.png" alt="Face noise 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/face_20.png" alt="Face noise 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h2>Part 1.7.2: Inpainting</h2>
+
+    <p>I implemented the inpainting function and tried inpainting images with custom masks:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/campanile_inpaint.png" alt="Campanile inpainted">
+            <div class="image-caption">Campanile Inpainted</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/redwood_inpaint.png" alt="Redwood inpainted">
+            <div class="image-caption">Redwood Inpainted</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/grand_canyon_inpaint.png" alt="Grand Canyon inpainted">
+            <div class="image-caption">Grand Canyon Inpainted</div>
+        </div>
+    </div>
+
+    <h2>Part 1.7.3: Text-Conditional Image-to-Image Translation</h2>
+
+    <p>I used image translation to transform images with the prompt "a photo of a rocket ship":</p>
+
+    <h3>Campanile to Rocket Ship</h3>
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/campanile_rocket_1.png" alt="Campanile rocket 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_rocket_3.png" alt="Campanile rocket 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_rocket_5.png" alt="Campanile rocket 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_rocket_7.png" alt="Campanile rocket 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_rocket_10.png" alt="Campanile rocket 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/campanile_rocket_20.png" alt="Campanile rocket 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h3>Redwood to Rocket Ship</h3>
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/redwood_rocket_1.png" alt="Redwood rocket 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_rocket_3.png" alt="Redwood rocket 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_rocket_5.png" alt="Redwood rocket 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_rocket_7.png" alt="Redwood rocket 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_rocket_10.png" alt="Redwood rocket 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/redwood_rocket_20.png" alt="Redwood rocket 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h3>Grand Canyon to Rocket Ship</h3>
+    <div class="six-gallery">
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_rocket_1.png" alt="Grand Canyon rocket 1">
+            <div class="image-caption">i_start=1</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_rocket_3.png" alt="Grand Canyon rocket 3">
+            <div class="image-caption">i_start=3</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_rocket_5.png" alt="Grand Canyon rocket 5">
+            <div class="image-caption">i_start=5</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_rocket_7.png" alt="Grand Canyon rocket 7">
+            <div class="image-caption">i_start=7</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_rocket_10.png" alt="Grand Canyon rocket 10">
+            <div class="image-caption">i_start=10</div>
+        </div>
+        <div class="six-gallery-item">
+            <img src="media/grand_canyon_rocket_20.png" alt="Grand Canyon rocket 20">
+            <div class="image-caption">i_start=20</div>
+        </div>
+    </div>
+
+    <h2>Part 1.8: Visual Anagrams</h2>
+
+    <p>We created visual anagrams where we can see two different images when we flip it upside down:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/man_campfire.png" alt="Man and Campfire">
+            <div class="image-caption">Man / Campfire Anagram<br>"an oil painting of an old man" /<br>"an oil painting of people around a campfire"</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/skull_village.png" alt="Skull and Village">
+            <div class="image-caption">Skull / Village Anagram<br>"a lithograph of a skull" /<br>"an oil painting of a snowy mountain village"</div>
+        </div>
+    </div>
+
+    <p>When you flip these images upside down, you can see a completely different image! The first shows a man right-side up and a campfire when flipped. The second shows a skull right-side up and a snowy village when flipped.</p>
+
+    <h2>Part 1.9: Hybrid Images</h2>
+
+    <p>Finally, we created hybrid images that show different content when viewed from close up vs far away:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="media/skull_water.png" alt="Water and Skull Hybrid">
+            <div class="image-caption">Water / Skull Hybrid</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="media/man_skull.png" alt="Man and Skull Hybrid">
+            <div class="image-caption">Man / Skull Hybrid</div>
+        </div>
+    </div>
+
+    <p>The second hybrid looks like a man up close, but the way that the torso is shaped/missing along with the beard looking like teeth makes it look like a skull from far away.</p>
+
+</body>
+</html>
