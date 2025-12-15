@@ -1,0 +1,144 @@
+Part 1.2 Using the UNet to Train a Denoiser
+
+deliverable:
+A visualization of the noising process using sigma = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+
+answer:
+In this blog we are tyring to see how we can use a unet to denoise an mnist image instead of a general image from the diffusion model from last time. We first show how the noise is added by showing how it looks when the digit 2 is at different noise levels:
+
+noising_digit_2.png
+
+
+
+1.2.1 Training
+
+deliverable:
+A training loss curve plot every few iterations during the whole training process of  sigma = 0.5
+
+Sample results on the test set with noise level 0.5 after the first and the 5-th epoch (staff solution takes ~3 minutes for 5 epochs on a Colab T4 GPU).
+
+answer:
+
+We tried training the unet on mnist with sigma = 0.5. The training loss curve is as follows:
+
+training_loss_unet.png
+
+As a comparison of how the unet performs in different points of the training, we also show the results of the unet after the first and the 5th epochs on a few examples:
+
+
+denoise_unet_epoch_1.png
+denoise_unet_epoch_5.png
+
+We can see that the unet performs better after the 5th epoch than the first epoch. This is because the unet is not able to denoise the image as well after the 1st epoch and still has some extra white traces.
+
+
+1.2.2 out of distribution denoising
+
+deliverable:
+Sample results on the test set with out-of-distribution noise levels after the model is trained. Keep the same image and vary  sigma from 0 to 1
+
+answer:
+
+We also tried to denoise images out of ditribution by testing various values of sigma from 0 to 1. The results for 3 examples are as follows:
+
+
+ood_noise.png
+
+we can see that the unet has a higher loss but the training loss seems to be relatively stable. We see the outputs of this unet after 1 and 5 epochs as well:
+
+
+
+
+
+1.2.3 pure noise denoising
+
+deliverable:
+A training loss curve plot every few iterations during the whole training process that denoises pure noise.
+Sample results on pure noise after the first and the 5-th epoch.
+A brief description of the patterns observed in the generated outputs and explanations for why they may exist.
+
+
+answer:
+
+We tried to denoise pure noise by training the unet on pure noise. The training loss curve is as follows:
+
+pure_noise_loss.png
+
+The results for pure noise after the first and the 5th epochs are as follows:
+
+pure_noise_denoise_epoch_1.png
+pure_noise_denoise_epoch_5.png
+
+We see that epoch 5 is a bit less blurry but all of the outputs look the same for a given epoch. I think that because the input does not provide any information at all, the unet learned to just not use the input and output a constant image that is the closest to the average of the training data(it looks like all of the digits where it is more light when there are more digits going through it)
+
+
+2.2 Using a time conditoined UNet to denoise - training
+
+Deliverables:
+
+A training loss curve plot for the time-conditioned UNet over the whole training process.
+
+
+Answer:
+
+we first show the training loss curve for the time-conditioned UNet:
+
+
+training_loss_time.png
+
+2.3 Sampleing from the unet
+
+deliverable:
+
+Sampling results from the time-conditioned UNet for 1, 5, and 10 epochs. The results should not be perfect, but reasonably good.
+
+answer:
+
+After this, we tried to train a time conditioend unet to help provide extra context for the denoising process. By having this extra time parameter, it gives the unet more information about how much noise there is and thus helps it decode. Here are the results of training 1,5, and 10 epochs:
+
+time_conditional_samples_epoch_001.png
+time_conditional_samples_epoch_005.png
+time_conditional_samples_epoch_010.png
+
+We can see that the time conditioned unet struggles to generate digits even after 10 epochs where it has stabilized in training loss. I think this may be due to not knowing which digit to generate since the unet will likely just generate a "random" looking digit. Note that it is better than the pure noise model as the time parameter provides some context and so it looks less noisy.
+
+
+2.4 The class conditioned unet
+
+We now give the model even more context: we tell the unet the class of the image (what digit it is) and seeing how it affects performance as well as sampling. If this works, it would let us generate chosen digits from the unet instead of random digits.
+
+2.5 training the class conditioned unet
+
+deliverable:
+A training loss curve plot for the class-conditioned UNet over the whole training process.
+
+answer:
+
+We first show the training loss curve for the class-conditioned UNet:
+
+class_training_loss.png
+
+We can see that the loss decreases over time, indicating that it does better on the training data.
+
+2.6 sampling from the class conditioned unet
+
+deliverable:
+Sampling results from the class-conditioned UNet for 1, 5, and 10 epochs. Class-conditioning lets us converge faster, hence why we only train for 10 epochs. Generate 4 instances of each digit as shown above.
+
+answer:
+
+We first show the sampling results for the class-conditioned UNet:
+
+class_conditional_samples_epoch_001.png
+class_conditional_samples_epoch_005.png
+class_conditional_samples_epoch_010.png
+
+We can see that the class-conditioned UNet is able to generate the digits much earlier into the training than the time-conditioned UNet. It seems that this extra piece of information is enough to help the unet converge faster
+
+
+2.7 sampling from the class conditioned unet
+
+deliverable:
+Sampling results from the class-conditioned UNet for 1, 5, and 10 epochs. Class-conditioning lets us converge faster, hence why we only train for 10 epochs. Generate 4 instances of each digit as shown above.
+
+answer:
