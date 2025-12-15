@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project 5A: Diffusion Models</title>
+    <title>Project 5: Diffusion Models</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -138,14 +138,27 @@
             height: auto;
             border-radius: 5px;
         }
+
+        .part-divider {
+            background: linear-gradient(90deg, #3498db, #9b59b6);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin: 50px 0 30px 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h1>Project 5A: Diffusion Models</h1>
+    <h1>Project 5: Diffusion Models</h1>
     
     <div class="intro">
-        <p>This project explores diffusion models for image generation and manipulation. We implement the forward noising process, classical and neural denoising, classifier-free guidance, and various image editing techniques including inpainting, image-to-image translation, visual anagrams, and hybrid images.</p>
+        <p>This project explores diffusion models for image generation and manipulation. Part A covers using pretrained diffusion models for various tasks including denoising, sampling, and image editing. Part B involves training our own diffusion models from scratch on MNIST digits.</p>
     </div>
+
+    <!-- ==================== PART A ==================== -->
+    <div class="part-divider">Part A: Using Pretrained Diffusion Models</div>
 
     <h2>Part 0: Setup and Text-to-Image Generation</h2>
 
@@ -153,15 +166,15 @@
 
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/lithograph_waterfall.png" alt="Lithograph of a waterfall">
+            <img src="../5A/media/lithograph_waterfall.png" alt="Lithograph of a waterfall">
             <div class="image-caption">"A lithograph of a waterfall" (50 steps)</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/lithograph_skull.png" alt="Lithograph of a skull">
+            <img src="../5A/media/lithograph_skull.png" alt="Lithograph of a skull">
             <div class="image-caption">"A lithograph of a skull" (20 steps)</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/man_hat.png" alt="Man with a hat">
+            <img src="../5A/media/man_hat.png" alt="Man with a hat">
             <div class="image-caption">"A drawing of a man with a hat" (50 steps)</div>
         </div>
     </div>
@@ -173,21 +186,21 @@
     <p>We implemented a forward function to add noise to an image based on the timestep. Here are the outputs for the campanile at noise levels 250, 500, and 750 (out of 1000). The original campanile image is also shown:</p>
 
     <div class="image-container">
-        <img src="media/campanile.png" alt="Original Campanile">
+        <img src="../5A/media/campanile.png" alt="Original Campanile">
         <div class="image-caption">Original Campanile</div>
     </div>
 
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/campanile_250.png" alt="Campanile at t=250">
+            <img src="../5A/media/campanile_250.png" alt="Campanile at t=250">
             <div class="image-caption">Noise Level t=250</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_500.png" alt="Campanile at t=500">
+            <img src="../5A/media/campanile_500.png" alt="Campanile at t=500">
             <div class="image-caption">Noise Level t=500</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_750.png" alt="Campanile at t=750">
+            <img src="../5A/media/campanile_750.png" alt="Campanile at t=750">
             <div class="image-caption">Noise Level t=750</div>
         </div>
     </div>
@@ -200,19 +213,19 @@
 
     <div class="gallery">
         <div class="gallery-item">
-            <img src="media/campanile_gaussian_000.png" alt="Gaussian denoised t=0">
+            <img src="../5A/media/campanile_gaussian_000.png" alt="Gaussian denoised t=0">
             <div class="image-caption">Gaussian Blur (Original)</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_gaussian_250.png" alt="Gaussian denoised t=250">
+            <img src="../5A/media/campanile_gaussian_250.png" alt="Gaussian denoised t=250">
             <div class="image-caption">Gaussian Denoised t=250</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_gaussian_500.png" alt="Gaussian denoised t=500">
+            <img src="../5A/media/campanile_gaussian_500.png" alt="Gaussian denoised t=500">
             <div class="image-caption">Gaussian Denoised t=500</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_gaussian_750.png" alt="Gaussian denoised t=750">
+            <img src="../5A/media/campanile_gaussian_750.png" alt="Gaussian denoised t=750">
             <div class="image-caption">Gaussian Denoised t=750</div>
         </div>
     </div>
@@ -224,15 +237,15 @@
     <h4>Noisy Campanile:</h4>
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/campanile_250.png" alt="Noisy campanile t=250">
+            <img src="../5A/media/campanile_250.png" alt="Noisy campanile t=250">
             <div class="image-caption">Noisy t=250</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_500.png" alt="Noisy campanile t=500">
+            <img src="../5A/media/campanile_500.png" alt="Noisy campanile t=500">
             <div class="image-caption">Noisy t=500</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_750.png" alt="Noisy campanile t=750">
+            <img src="../5A/media/campanile_750.png" alt="Noisy campanile t=750">
             <div class="image-caption">Noisy t=750</div>
         </div>
     </div>
@@ -240,15 +253,15 @@
     <h4>One-Step Denoised Campanile:</h4>
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/campanile_one_step_250.png" alt="One-step denoised t=250">
+            <img src="../5A/media/campanile_one_step_250.png" alt="One-step denoised t=250">
             <div class="image-caption">One-Step Denoised t=250</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_one_step_500.png" alt="One-step denoised t=500">
+            <img src="../5A/media/campanile_one_step_500.png" alt="One-step denoised t=500">
             <div class="image-caption">One-Step Denoised t=500</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_one_step_750.png" alt="One-step denoised t=750">
+            <img src="../5A/media/campanile_one_step_750.png" alt="One-step denoised t=750">
             <div class="image-caption">One-Step Denoised t=750</div>
         </div>
     </div>
@@ -261,41 +274,41 @@
 
     <div class="gallery">
         <div class="gallery-item">
-            <img src="media/campanile_timestep_10.png" alt="Timestep 10">
+            <img src="../5A/media/campanile_timestep_10.png" alt="Timestep 10">
             <div class="image-caption">Loop 10</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_timestep_15.png" alt="Timestep 15">
+            <img src="../5A/media/campanile_timestep_15.png" alt="Timestep 15">
             <div class="image-caption">Loop 15</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_timestep_20.png" alt="Timestep 20">
+            <img src="../5A/media/campanile_timestep_20.png" alt="Timestep 20">
             <div class="image-caption">Loop 20</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_timestep_25.png" alt="Timestep 25">
+            <img src="../5A/media/campanile_timestep_25.png" alt="Timestep 25">
             <div class="image-caption">Loop 25</div>
         </div>
         <div class="gallery-item">
-            <img src="media/campanile_timestep_30.png" alt="Timestep 30">
+            <img src="../5A/media/campanile_timestep_30.png" alt="Timestep 30">
             <div class="image-caption">Loop 30</div>
         </div>
     </div>
 
     <h4>Final Predicted Clean Image (Iterative Denoising):</h4>
     <div class="image-container">
-        <img src="media/campanile_timestep_final.png" alt="Final iterative denoising result">
+        <img src="../5A/media/campanile_timestep_final.png" alt="Final iterative denoising result">
         <div class="image-caption">Final Result - Iterative Denoising</div>
     </div>
 
     <h4>Comparison with One-Step and Gaussian:</h4>
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/campanile_one_step_500.png" alt="One-step denoising">
+            <img src="../5A/media/campanile_one_step_500.png" alt="One-step denoising">
             <div class="image-caption">One-Step Denoising (Much Worse)</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/campanile_gaussian_500.png" alt="Gaussian blur">
+            <img src="../5A/media/campanile_gaussian_500.png" alt="Gaussian blur">
             <div class="image-caption">Gaussian Blur</div>
         </div>
     </div>
@@ -306,23 +319,23 @@
 
     <div class="gallery">
         <div class="gallery-item">
-            <img src="media/random_image_1.png" alt="Random image 1">
+            <img src="../5A/media/random_image_1.png" alt="Random image 1">
             <div class="image-caption">Sample 1</div>
         </div>
         <div class="gallery-item">
-            <img src="media/random_image_2.png" alt="Random image 2">
+            <img src="../5A/media/random_image_2.png" alt="Random image 2">
             <div class="image-caption">Sample 2</div>
         </div>
         <div class="gallery-item">
-            <img src="media/random_image_3.png" alt="Random image 3">
+            <img src="../5A/media/random_image_3.png" alt="Random image 3">
             <div class="image-caption">Sample 3</div>
         </div>
         <div class="gallery-item">
-            <img src="media/random_image_4.png" alt="Random image 4">
+            <img src="../5A/media/random_image_4.png" alt="Random image 4">
             <div class="image-caption">Sample 4</div>
         </div>
         <div class="gallery-item">
-            <img src="media/random_image_5.png" alt="Random image 5">
+            <img src="../5A/media/random_image_5.png" alt="Random image 5">
             <div class="image-caption">Sample 5</div>
         </div>
     </div>
@@ -333,23 +346,23 @@
 
     <div class="gallery">
         <div class="gallery-item">
-            <img src="media/conditional_img_1.png" alt="Conditional image 1">
+            <img src="../5A/media/conditional_img_1.png" alt="Conditional image 1">
             <div class="image-caption">CFG Sample 1</div>
         </div>
         <div class="gallery-item">
-            <img src="media/conditional_img_2.png" alt="Conditional image 2">
+            <img src="../5A/media/conditional_img_2.png" alt="Conditional image 2">
             <div class="image-caption">CFG Sample 2</div>
         </div>
         <div class="gallery-item">
-            <img src="media/conditional_img_3.png" alt="Conditional image 3">
+            <img src="../5A/media/conditional_img_3.png" alt="Conditional image 3">
             <div class="image-caption">CFG Sample 3</div>
         </div>
         <div class="gallery-item">
-            <img src="media/conditional_img_4.png" alt="Conditional image 4">
+            <img src="../5A/media/conditional_img_4.png" alt="Conditional image 4">
             <div class="image-caption">CFG Sample 4</div>
         </div>
         <div class="gallery-item">
-            <img src="media/conditional_img_5.png" alt="Conditional image 5">
+            <img src="../5A/media/conditional_img_5.png" alt="Conditional image 5">
             <div class="image-caption">CFG Sample 5</div>
         </div>
     </div>
@@ -360,99 +373,99 @@
 
     <h3>Campanile</h3>
     <div class="image-container">
-        <img src="media/campanile.png" alt="Original Campanile">
+        <img src="../5A/media/campanile.png" alt="Original Campanile">
         <div class="image-caption">Original Campanile</div>
     </div>
 
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/campanile_1.png" alt="Campanile noise 1">
+            <img src="../5A/media/campanile_1.png" alt="Campanile noise 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_3.png" alt="Campanile noise 3">
+            <img src="../5A/media/campanile_3.png" alt="Campanile noise 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_5.png" alt="Campanile noise 5">
+            <img src="../5A/media/campanile_5.png" alt="Campanile noise 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_7.png" alt="Campanile noise 7">
+            <img src="../5A/media/campanile_7.png" alt="Campanile noise 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_10.png" alt="Campanile noise 10">
+            <img src="../5A/media/campanile_10.png" alt="Campanile noise 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_20.png" alt="Campanile noise 20">
+            <img src="../5A/media/campanile_20.png" alt="Campanile noise 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
 
     <h3>Redwood Forest</h3>
     <div class="image-container">
-        <img src="media/redwood.png" alt="Original Redwood">
+        <img src="../5A/media/redwood.png" alt="Original Redwood">
         <div class="image-caption">Original Redwood Forest</div>
     </div>
 
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/redwood_1.png" alt="Redwood noise 1">
+            <img src="../5A/media/redwood_1.png" alt="Redwood noise 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_3.png" alt="Redwood noise 3">
+            <img src="../5A/media/redwood_3.png" alt="Redwood noise 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_5.png" alt="Redwood noise 5">
+            <img src="../5A/media/redwood_5.png" alt="Redwood noise 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_7.png" alt="Redwood noise 7">
+            <img src="../5A/media/redwood_7.png" alt="Redwood noise 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_10.png" alt="Redwood noise 10">
+            <img src="../5A/media/redwood_10.png" alt="Redwood noise 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_20.png" alt="Redwood noise 20">
+            <img src="../5A/media/redwood_20.png" alt="Redwood noise 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
 
     <h3>Grand Canyon</h3>
     <div class="image-container">
-        <img src="media/grand_canyon.png" alt="Original Grand Canyon">
+        <img src="../5A/media/grand_canyon.png" alt="Original Grand Canyon">
         <div class="image-caption">Original Grand Canyon</div>
     </div>
 
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_1.png" alt="Grand Canyon noise 1">
+            <img src="../5A/media/grand_canyon_1.png" alt="Grand Canyon noise 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_3.png" alt="Grand Canyon noise 3">
+            <img src="../5A/media/grand_canyon_3.png" alt="Grand Canyon noise 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_5.png" alt="Grand Canyon noise 5">
+            <img src="../5A/media/grand_canyon_5.png" alt="Grand Canyon noise 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_7.png" alt="Grand Canyon noise 7">
+            <img src="../5A/media/grand_canyon_7.png" alt="Grand Canyon noise 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_10.png" alt="Grand Canyon noise 10">
+            <img src="../5A/media/grand_canyon_10.png" alt="Grand Canyon noise 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_20.png" alt="Grand Canyon noise 20">
+            <img src="../5A/media/grand_canyon_20.png" alt="Grand Canyon noise 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
@@ -463,66 +476,66 @@
 
     <h3>Web Image: Avocado</h3>
     <div class="image-container">
-        <img src="media/avocado.png" alt="Original Avocado">
+        <img src="../5A/media/avocado.png" alt="Original Avocado">
         <div class="image-caption">Original Avocado (Web Image)</div>
     </div>
 
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/avocado_1.png" alt="Avocado noise 1">
+            <img src="../5A/media/avocado_1.png" alt="Avocado noise 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/avocado_3.png" alt="Avocado noise 3">
+            <img src="../5A/media/avocado_3.png" alt="Avocado noise 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/avocado_5.png" alt="Avocado noise 5">
+            <img src="../5A/media/avocado_5.png" alt="Avocado noise 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/avocado_7.png" alt="Avocado noise 7">
+            <img src="../5A/media/avocado_7.png" alt="Avocado noise 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/avocado_10.png" alt="Avocado noise 10">
+            <img src="../5A/media/avocado_10.png" alt="Avocado noise 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/avocado_20.png" alt="Avocado noise 20">
+            <img src="../5A/media/avocado_20.png" alt="Avocado noise 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
 
     <h3>Hand-Drawn Image: Face</h3>
     <div class="image-container">
-        <img src="media/face.png" alt="Original Face">
+        <img src="../5A/media/face.png" alt="Original Face">
         <div class="image-caption">Original Hand-Drawn Face</div>
     </div>
 
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/face_1.png" alt="Face noise 1">
+            <img src="../5A/media/face_1.png" alt="Face noise 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/face_3.png" alt="Face noise 3">
+            <img src="../5A/media/face_3.png" alt="Face noise 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/face_5.png" alt="Face noise 5">
+            <img src="../5A/media/face_5.png" alt="Face noise 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/face_7.png" alt="Face noise 7">
+            <img src="../5A/media/face_7.png" alt="Face noise 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/face_10.png" alt="Face noise 10">
+            <img src="../5A/media/face_10.png" alt="Face noise 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/face_20.png" alt="Face noise 20">
+            <img src="../5A/media/face_20.png" alt="Face noise 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
@@ -533,15 +546,15 @@
 
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/campanile_inpaint.png" alt="Campanile inpainted">
+            <img src="../5A/media/campanile_inpaint.png" alt="Campanile inpainted">
             <div class="image-caption">Campanile Inpainted</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/redwood_inpaint.png" alt="Redwood inpainted">
+            <img src="../5A/media/redwood_inpaint.png" alt="Redwood inpainted">
             <div class="image-caption">Redwood Inpainted</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/grand_canyon_inpaint.png" alt="Grand Canyon inpainted">
+            <img src="../5A/media/grand_canyon_inpaint.png" alt="Grand Canyon inpainted">
             <div class="image-caption">Grand Canyon Inpainted</div>
         </div>
     </div>
@@ -555,27 +568,27 @@
     <h3>Campanile to Rocket Ship</h3>
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/campanile_rocket_1.png" alt="Campanile rocket 1">
+            <img src="../5A/media/campanile_rocket_1.png" alt="Campanile rocket 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_rocket_3.png" alt="Campanile rocket 3">
+            <img src="../5A/media/campanile_rocket_3.png" alt="Campanile rocket 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_rocket_5.png" alt="Campanile rocket 5">
+            <img src="../5A/media/campanile_rocket_5.png" alt="Campanile rocket 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_rocket_7.png" alt="Campanile rocket 7">
+            <img src="../5A/media/campanile_rocket_7.png" alt="Campanile rocket 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_rocket_10.png" alt="Campanile rocket 10">
+            <img src="../5A/media/campanile_rocket_10.png" alt="Campanile rocket 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/campanile_rocket_20.png" alt="Campanile rocket 20">
+            <img src="../5A/media/campanile_rocket_20.png" alt="Campanile rocket 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
@@ -583,27 +596,27 @@
     <h3>Redwood to Rocket Ship</h3>
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/redwood_rocket_1.png" alt="Redwood rocket 1">
+            <img src="../5A/media/redwood_rocket_1.png" alt="Redwood rocket 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_rocket_3.png" alt="Redwood rocket 3">
+            <img src="../5A/media/redwood_rocket_3.png" alt="Redwood rocket 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_rocket_5.png" alt="Redwood rocket 5">
+            <img src="../5A/media/redwood_rocket_5.png" alt="Redwood rocket 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_rocket_7.png" alt="Redwood rocket 7">
+            <img src="../5A/media/redwood_rocket_7.png" alt="Redwood rocket 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_rocket_10.png" alt="Redwood rocket 10">
+            <img src="../5A/media/redwood_rocket_10.png" alt="Redwood rocket 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/redwood_rocket_20.png" alt="Redwood rocket 20">
+            <img src="../5A/media/redwood_rocket_20.png" alt="Redwood rocket 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
@@ -611,27 +624,27 @@
     <h3>Grand Canyon to Rocket Ship</h3>
     <div class="six-gallery">
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_rocket_1.png" alt="Grand Canyon rocket 1">
+            <img src="../5A/media/grand_canyon_rocket_1.png" alt="Grand Canyon rocket 1">
             <div class="image-caption">i_start=1</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_rocket_3.png" alt="Grand Canyon rocket 3">
+            <img src="../5A/media/grand_canyon_rocket_3.png" alt="Grand Canyon rocket 3">
             <div class="image-caption">i_start=3</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_rocket_5.png" alt="Grand Canyon rocket 5">
+            <img src="../5A/media/grand_canyon_rocket_5.png" alt="Grand Canyon rocket 5">
             <div class="image-caption">i_start=5</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_rocket_7.png" alt="Grand Canyon rocket 7">
+            <img src="../5A/media/grand_canyon_rocket_7.png" alt="Grand Canyon rocket 7">
             <div class="image-caption">i_start=7</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_rocket_10.png" alt="Grand Canyon rocket 10">
+            <img src="../5A/media/grand_canyon_rocket_10.png" alt="Grand Canyon rocket 10">
             <div class="image-caption">i_start=10</div>
         </div>
         <div class="six-gallery-item">
-            <img src="media/grand_canyon_rocket_20.png" alt="Grand Canyon rocket 20">
+            <img src="../5A/media/grand_canyon_rocket_20.png" alt="Grand Canyon rocket 20">
             <div class="image-caption">i_start=20</div>
         </div>
     </div>
@@ -642,11 +655,11 @@
 
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/man_campfire.png" alt="Man and Campfire">
+            <img src="../5A/media/man_campfire.png" alt="Man and Campfire">
             <div class="image-caption">Man / Campfire Anagram<br>"an oil painting of an old man" /<br>"an oil painting of people around a campfire"</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/skull_village.png" alt="Skull and Village">
+            <img src="../5A/media/skull_village.png" alt="Skull and Village">
             <div class="image-caption">Skull / Village Anagram<br>"a lithograph of a skull" /<br>"an oil painting of a snowy mountain village"</div>
         </div>
     </div>
@@ -659,16 +672,152 @@
 
     <div class="small-gallery">
         <div class="small-gallery-item">
-            <img src="media/skull_water.png" alt="Water and Skull Hybrid">
+            <img src="../5A/media/skull_water.png" alt="Water and Skull Hybrid">
             <div class="image-caption">Water / Skull Hybrid</div>
         </div>
         <div class="small-gallery-item">
-            <img src="media/man_skull.png" alt="Man and Skull Hybrid">
+            <img src="../5A/media/man_skull.png" alt="Man and Skull Hybrid">
             <div class="image-caption">Man / Skull Hybrid</div>
         </div>
     </div>
 
     <p>The second hybrid looks like a man up close, but the way that the torso is shaped/missing along with the beard looking like teeth makes it look like a skull from far away.</p>
 
+    <!-- ==================== PART B ==================== -->
+    <div class="part-divider">Part B: Training Diffusion Models</div>
+
+    <h2>Part 1.2: Using the UNet to Train a Denoiser</h2>
+
+    <p>In this section we explore how to use a UNet to denoise MNIST images instead of general images from the diffusion model. We first show how noise is added by visualizing the digit 2 at different noise levels:</p>
+
+    <div class="image-container">
+        <img src="../5B/media/noising_digit_2.png" alt="Noising process visualization">
+        <div class="image-caption">Noising process on digit 2 with sigma = [0, 0.2, 0.4, 0.6, 0.8, 1.0]</div>
+    </div>
+
+    <h3>1.2.1 Training</h3>
+
+    <p>We trained the UNet on MNIST with sigma = 0.5. The training loss curve is as follows:</p>
+
+    <div class="image-container">
+        <img src="../5B/media/training_loss_unet.png" alt="Training loss curve">
+        <div class="image-caption">Training Loss Curve for UNet (sigma = 0.5)</div>
+    </div>
+
+    <p>As a comparison of how the UNet performs at different points during training, we show the results after the 1st and 5th epochs on a few examples:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="../5B/media/denoise_unet_epoch_1.png" alt="Denoising after epoch 1">
+            <div class="image-caption">After Epoch 1</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="../5B/media/denoise_unet_epoch_5.png" alt="Denoising after epoch 5">
+            <div class="image-caption">After Epoch 5</div>
+        </div>
+    </div>
+
+    <p>We can see that the UNet performs better after the 5th epoch than the first epoch. This is because the UNet is not able to denoise the image as well after the 1st epoch and still has some extra white traces.</p>
+
+    <h3>1.2.2 Out-of-Distribution Denoising</h3>
+
+    <p>We also tried to denoise images out of distribution by testing various values of sigma from 0 to 1. The results for 3 examples are as follows:</p>
+
+    <div class="image-container">
+        <img src="../5B/media/ood_noise.png" alt="Out-of-distribution noise results">
+        <div class="image-caption">Out-of-Distribution Denoising (varying sigma from 0 to 1)</div>
+    </div>
+
+    <p>We can see that the UNet has a higher loss but the training loss seems to be relatively stable.</p>
+
+    <h3>1.2.3 Pure Noise Denoising</h3>
+
+    <p>We tried to denoise pure noise by training the UNet on pure noise. The training loss curve is as follows:</p>
+
+    <div class="image-container">
+        <img src="../5B/media/pure_noise_loss.png" alt="Pure noise training loss">
+        <div class="image-caption">Training Loss Curve for Pure Noise Denoising</div>
+    </div>
+
+    <p>The results for pure noise after the 1st and 5th epochs are as follows:</p>
+
+    <div class="small-gallery">
+        <div class="small-gallery-item">
+            <img src="../5B/media/pure_noise_denoise_epoch_1.png" alt="Pure noise epoch 1">
+            <div class="image-caption">After Epoch 1</div>
+        </div>
+        <div class="small-gallery-item">
+            <img src="../5B/media/pure_noise_denoise_epoch_5.png" alt="Pure noise epoch 5">
+            <div class="image-caption">After Epoch 5</div>
+        </div>
+    </div>
+
+    <p>We see that epoch 5 is a bit less blurry but all of the outputs look the same for a given epoch. I think that because the input does not provide any information at all, the UNet learned to just not use the input and output a constant image that is the closest to the average of the training data (it looks like all of the digits where it is more light when there are more digits going through it).</p>
+
+    <h2>Part 2.2: Time-Conditioned UNet Training</h2>
+
+    <p>We first show the training loss curve for the time-conditioned UNet:</p>
+
+    <div class="image-container">
+        <img src="../5B/media/training_loss_time.png" alt="Time-conditioned UNet training loss">
+        <div class="image-caption">Training Loss Curve for Time-Conditioned UNet</div>
+    </div>
+
+    <h2>Part 2.3: Sampling from the Time-Conditioned UNet</h2>
+
+    <p>We trained a time-conditioned UNet to help provide extra context for the denoising process. By having this extra time parameter, it gives the UNet more information about how much noise there is and thus helps it decode. Here are the results after training for 1, 5, and 10 epochs:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="../5B/media/time_conditional_samples_epoch_001.png" alt="Time-conditioned samples epoch 1">
+            <div class="image-caption">Epoch 1</div>
+        </div>
+        <div class="gallery-item">
+            <img src="../5B/media/time_conditional_samples_epoch_005.png" alt="Time-conditioned samples epoch 5">
+            <div class="image-caption">Epoch 5</div>
+        </div>
+        <div class="gallery-item">
+            <img src="../5B/media/time_conditional_samples_epoch_010.png" alt="Time-conditioned samples epoch 10">
+            <div class="image-caption">Epoch 10</div>
+        </div>
+    </div>
+
+    <p>We can see that the time-conditioned UNet struggles to generate digits even after 10 epochs where it has stabilized in training loss. I think this may be due to not knowing which digit to generate since the UNet will likely just generate a "random" looking digit. Note that it is better than the pure noise model as the time parameter provides some context and so it looks less noisy.</p>
+
+    <h2>Part 2.4-2.5: Class-Conditioned UNet Training</h2>
+
+    <p>We now give the model even more context: we tell the UNet the class of the image (what digit it is) and see how it affects performance as well as sampling. If this works, it would let us generate chosen digits from the UNet instead of random digits.</p>
+
+    <p>We first show the training loss curve for the class-conditioned UNet:</p>
+
+    <div class="image-container">
+        <img src="../5B/media/class_training_loss.png" alt="Class-conditioned UNet training loss">
+        <div class="image-caption">Training Loss Curve for Class-Conditioned UNet</div>
+    </div>
+
+    <p>We can see that the loss decreases over time, indicating that it does better on the training data.</p>
+
+    <h2>Part 2.6: Sampling from the Class-Conditioned UNet</h2>
+
+    <p>We show the sampling results for the class-conditioned UNet, generating 4 instances of each digit:</p>
+
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="../5B/media/class_conditional_samples_epoch_001.png" alt="Class-conditioned samples epoch 1">
+            <div class="image-caption">Epoch 1</div>
+        </div>
+        <div class="gallery-item">
+            <img src="../5B/media/class_conditional_samples_epoch_005.png" alt="Class-conditioned samples epoch 5">
+            <div class="image-caption">Epoch 5</div>
+        </div>
+        <div class="gallery-item">
+            <img src="../5B/media/class_conditional_samples_epoch_010.png" alt="Class-conditioned samples epoch 10">
+            <div class="image-caption">Epoch 10</div>
+        </div>
+    </div>
+
+    <p>We can see that the class-conditioned UNet is able to generate the digits much earlier into the training than the time-conditioned UNet. It seems that this extra piece of information is enough to help the UNet converge faster.</p>
+
 </body>
 </html>
+
